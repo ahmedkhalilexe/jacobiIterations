@@ -11,7 +11,8 @@ def Jacobi():
     iterations = 0
     #check if matrix is diagonally dominant
     if checkDiagDom(matrixA) == False:
-        return x
+        #make the matrix diagonally dominant
+        matrixA, vecterB = makeDiagDom(matrixA, vecterB)
     #looping through the iterations
     while iterations < maxIterations:
         #looping throgth the rows
@@ -55,6 +56,36 @@ def checkDiagDom(matrixA):
             return False
     return True
 
+def makeDiagDom(matrixA, vecterB):
+    n = len(matrixA)
+    tempMatrix = []
+    tempVector = []
+    for i in range(n):
+        maxIndexInRow = getMaxIndexInRow(matrixA[i])
+        if maxIndexInRow != i:
+            tempMatrix = np.copy(matrixA[i])
+            tempVector = np.copy(vecterB[i])
+            matrixA[i] = np.copy(matrixA[maxIndexInRow])
+            vecterB[i] = np.copy(vecterB[maxIndexInRow])
+            matrixA[maxIndexInRow] = tempMatrix.copy()
+            vecterB[maxIndexInRow] = tempVector.copy()
+    print("new matrix: ", matrixA)
+    print("new b is: ", vecterB)
+    return matrixA, vecterB
+
+def getMaxIndexInRow(row):
+    n = len(row)
+    maxValueIndex = 0
+    for i in range(n):
+        sum = 0
+        for j in range(n):
+            if j != i:
+                #calculate the sum of the absulote elements Ai,j
+                sum = sum + abs(row[j])
+        if abs(row[i]) > sum:
+            maxValueIndex = i
+    return maxValueIndex
+
 def printSolution(x):
     n = len(x)
     #looping through the solution x = [x1,x2,...,xn]
@@ -81,5 +112,4 @@ def getVecterB(n):
     return vecterB
 
 Jacobi()
-
 
